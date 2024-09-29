@@ -13,5 +13,5 @@ OpenCV for computer vision tasks
 TensorFlow/Keras for machine learning
 Python for application logic
 streamlit for web interface
+![License Plate Detection and Recognition image](Screenshot%202024-09-29%20160617.jpg)
 
-![License Plate Detection](path/to/video.gif)
