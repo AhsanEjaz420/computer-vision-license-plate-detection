@@ -1,0 +1,48 @@
+from ultralytics import YOLO
+import cv2
+#import pytesseract
+
+# Load pre-trained YOLO model (fine-tune with custom dataset if needed)
+model = YOLO("D:/yolo/New folder/license_plate_detector.pt")  # You can use other YOLOv8 variants like yolov8s.pt, yolov8m.pt, etc.
+
+# Path to your video or image file
+video = cv2.VideoCapture("D:\yolo\car batch vedio 3\car 18\car 18-1.mp4")
+
+# Optional: Configure pytesseract (update the tesseract_cmd if necessary)
+#pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+while True:
+    ret, frame = video.read()
+    if not ret:
+        break
+
+    # Run YOLO model on the frame
+    results = model(frame)
+
+    # Process YOLO results
+    for result in results[0].boxes.data.tolist():
+        x1, y1, x2, y2, score, class_id = result
+        print(score, x1, y1, x2, y2)
+        # Draw a rectangle around the detected car
+        cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+
+        # Crop the detected vehicle region
+        #car_crop = frame[int(y1):int(y2), int(x1):int(x2)]
+
+        # Optionally: Run license plate detection (could be another YOLO model or OCR)
+        # Assuming license plate is inside the car_crop, perform OCR
+        #gray_car = cv2.cvtColor(car_crop, cv2.COLOR_BGR2GRAY)
+        #license_plate_text = pytesseract.image_to_string(gray_car, config='--psm 8')  # OCR config for better plate reading
+        #print("License Plate:", license_plate_text)
+
+        # Display the plate text on the frame
+        cv2.putText(frame,'Number plate' ,(int(x1), int(y1)), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+
+    # Display frame
+    cv2.imshow('License Plate Detection', frame)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+video.release()
+cv2.destroyAllWindows()
